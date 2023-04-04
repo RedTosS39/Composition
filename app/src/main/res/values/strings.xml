@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Composition</string>
+    <string name="game_rules">Игра предназначена для детей от 3 лет. Для начала расскажите ребёнку, что каждое число можно разложить на несколько других чисел. Чтобы заниматься было легче, можно сначала использовать карточки с треугольниками, а только потом переходить к цифрам.</string>
+    <string name="welcome_logo">welcome logo</string>
+    <string name="understand">Понятно</string>
+    <string name="string_question_mark">\?</string>
+    <string name="progress_answers">правильных ответов %s (минимум s%)</string>
 </resources>
