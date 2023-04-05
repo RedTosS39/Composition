@@ -5,4 +5,10 @@
     <string name="understand">Понятно</string>
     <string name="string_question_mark">\?</string>
     <string name="progress_answers">правильных ответов %s (минимум s%)</string>
+    <string name="timer">00 : 00</string>
+    <string name="game_over">game over</string>
+    <string name="required_answers">Необходимое количество правильных ответов: %s</string>
+    <string name="scores_answers">Ваш ответ: %s</string>
+    <string name="required_percentage">Необходимый % правильных ответов: %s</string>
+    <string name="scores_percentage">Процент правильных ответов: %s</string>
 </resources>
