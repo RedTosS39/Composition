@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
@@ -30,9 +31,17 @@ class GameFinishedFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    retryGame()
+                }
+            })
+
         with(binding) {
             tvRequiredAnswers.text = gameResult.countOfQuestions.toString()
             tvScoresAnswers.text = gameResult.countOfRightAnswers.toString()
@@ -41,10 +50,7 @@ class GameFinishedFragment : Fragment() {
             }
 
             buttonRetry.setOnClickListener {
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_container, ChoseLevelFragment.newInstance())
-                    .addToBackStack(null)
-                    .commit()
+                retryGame()
             }
         }
     }
@@ -54,8 +60,12 @@ class GameFinishedFragment : Fragment() {
         _binding = null
     }
 
+    private fun retryGame() {
+        requireActivity().supportFragmentManager.popBackStack(ChoseLevelFragment.NAME, 0)
+    }
+
     private fun parseArgs() {
-        gameResult = arguments?.getSerializable(GAME_RESULT) as GameResult
+        gameResult = requireArguments().getSerializable(GAME_RESULT) as GameResult
     }
 
     companion object {
