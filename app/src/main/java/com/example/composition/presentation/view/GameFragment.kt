@@ -45,12 +45,12 @@ class GameFragment : Fragment() {
                         4
                     )
                 )
-                launchGameFragment(result)
+                launchGameFinishedFragment(result)
             }
         }
     }
 
-    private fun launchGameFragment(gameResult: GameResult) {
+    private fun launchGameFinishedFragment(gameResult: GameResult) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, GameFinishedFragment.newInstance(gameResult))
             .addToBackStack(null)
@@ -69,6 +69,7 @@ class GameFragment : Fragment() {
     }
 
     companion object {
+
 
         const val KEY_LEVEL = "KEY_LEVEL"
         fun newInstance(level: Level): GameFragment {
