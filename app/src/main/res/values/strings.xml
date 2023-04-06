@@ -11,4 +11,5 @@
     <string name="scores_answers">Ваш ответ: %s</string>
     <string name="required_percentage">Необходимый % правильных ответов: %s</string>
     <string name="scores_percentage">Процент правильных ответов: %s</string>
+    <string name="title">Состав числа</string>
 </resources>
