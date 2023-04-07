@@ -1,11 +1,13 @@
 package com.example.composition.presentation.view
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entities.GameResult
@@ -34,13 +36,15 @@ class GameFinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                retryGame()
+            }
+        }
+
         requireActivity()
             .onBackPressedDispatcher
-            .addCallback(object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    retryGame()
-                }
-            })
+            .addCallback(viewLifecycleOwner, callback)
 
         with(binding) {
             tvRequiredAnswers.text = gameResult.countOfQuestions.toString()
@@ -61,11 +65,19 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun retryGame() {
-        requireActivity().supportFragmentManager.popBackStack(ChoseLevelFragment.NAME, 0)
+        requireActivity().supportFragmentManager.popBackStack(
+            GameFragment.NAME,
+            FragmentManager.POP_BACK_STACK_INCLUSIVE
+        )
+
     }
 
     private fun parseArgs() {
-        gameResult = requireArguments().getSerializable(GAME_RESULT) as GameResult
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getParcelable(GAME_RESULT, GameResult::class.java)?.let {
+                gameResult = it
+            }
+        }
     }
 
     companion object {
@@ -74,7 +86,7 @@ class GameFinishedFragment : Fragment() {
 
             return GameFinishedFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(GAME_RESULT, gameResult)
+                    putParcelable(GAME_RESULT, gameResult)
                 }
             }
         }
