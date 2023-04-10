@@ -90,11 +90,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         return (_countOfRightAnswers / _countOfQuestions.toDouble() * 100).toInt()
     }
 
-    private fun choseAnswer(number: Int) {
+    fun choseAnswer(number: Int) {
         checkAnswer(number)
         updateProgress()
         generateQuestion()
-
     }
 
     private fun checkAnswer(number: Int) {
@@ -154,7 +153,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             settings
         )
     }
-
 
     companion object {
         private const val MILLIS_IN_SECONDS = 1000L
