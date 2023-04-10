@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
 import com.example.composition.domain.entities.GameResult
 import com.example.composition.domain.entities.GameSettings
 import com.example.composition.domain.entities.Level
+import com.example.composition.presentation.viewmodel.GameViewModel
 
 class GameFragment : Fragment() {
+
     private var _binding: FragmentGameBinding? = null
     private lateinit var level: Level
     private val binding: FragmentGameBinding
