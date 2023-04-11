@@ -49,9 +49,13 @@ class GameFinishedFragment : Fragment() {
         with(binding) {
             tvRequiredAnswers.text = gameResult.countOfQuestions.toString()
             tvScoresAnswers.text = gameResult.countOfRightAnswers.toString()
-            if (gameResult.winner) {
+            if (!gameResult.winner) {
                 emojiResult.setImageResource(R.drawable.smile_bad)
             }
+
+            tvScoresPercentage.text = count().toString()
+
+            tvRequiredPercentage.text = gameResult.gameSettings.minPercentOfRightAnswers.toString()
 
             buttonRetry.setOnClickListener {
                 retryGame()
@@ -59,6 +63,14 @@ class GameFinishedFragment : Fragment() {
         }
     }
 
+    private fun count() : Double {
+        val countOfQuestions = gameResult.countOfQuestions.toString().toInt().toDouble()
+        val countOfRightAnswers = gameResult.countOfRightAnswers.toString().toDouble()
+        if(countOfRightAnswers == 0.0) {
+            return 0.0
+        }
+        return  (countOfQuestions/countOfRightAnswers) * 100
+    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

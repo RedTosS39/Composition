@@ -1,18 +1,19 @@
 package com.example.composition.presentation.view
 
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.*
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
 import com.example.composition.domain.entities.GameResult
-import com.example.composition.domain.entities.GameSettings
 import com.example.composition.domain.entities.Level
 import com.example.composition.presentation.viewmodel.GameViewModel
 
@@ -56,8 +57,19 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
-
+        setClickListenerToOptions()
+        viewModel.startGame(level)
     }
+
+    private fun setClickListenerToOptions() {
+
+        for (options in textViewOptions) {
+            options.setOnClickListener {
+                viewModel.choseAnswer(options.text.toString().toInt())
+            }
+        }
+    }
+
 
     private fun observeViewModel() {
 
@@ -70,8 +82,47 @@ class GameFragment : Fragment() {
             }
         }
 
-        viewModel.startGame(level)
+        viewModel.progressAnswers.observe(viewLifecycleOwner) {
+            binding.tvAnswerProgress.text = it
+        }
+
+        viewModel.percentageOfRightAnswers.observe(viewLifecycleOwner) {
+            binding.progressBar.setProgress(it, true)
+        }
+
+        viewModel.enoughCount.observe(viewLifecycleOwner) {
+            binding.tvAnswerProgress.setTextColor(getColorByState(it))
+        }
+
+        viewModel.enoughPercent.observe(viewLifecycleOwner) {
+            val color = getColorByState(it)
+            binding.progressBar.progressTintList = ColorStateList.valueOf(color)
+        }
+
+        viewModel.formattedTime.observe(viewLifecycleOwner) {
+            binding.tvTimer.text = it
+        }
+
+        viewModel.minPercent.observe(viewLifecycleOwner) {
+            binding.progressBar.secondaryProgress = it
+        }
+
+        viewModel.gameResult.observe(viewLifecycleOwner) {
+            launchGameFinishedFragment(it)
+        }
     }
+
+    private fun getColorByState(state: Boolean) : Int {
+
+        val colorResId = if(state) {
+            android.R.color.holo_green_dark
+        } else {
+            android.R.color.holo_red_light
+        }
+
+        return ContextCompat.getColor(requireContext(), colorResId)
+    }
+
 
     private fun launchGameFinishedFragment(gameResult: GameResult) {
         requireActivity().supportFragmentManager.beginTransaction()
