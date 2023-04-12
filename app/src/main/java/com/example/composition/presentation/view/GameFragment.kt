@@ -10,17 +10,26 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.*
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
 import com.example.composition.domain.entities.GameResult
 import com.example.composition.domain.entities.Level
 import com.example.composition.presentation.viewmodel.GameViewModel
+import com.example.composition.presentation.viewmodel.GameViewModelFactory
 
 class GameFragment : Fragment() {
 
+    private lateinit var level: Level
 
-    private  val textViewOptions by lazy {
+    private val viewModelFactory by lazy {
+        GameViewModelFactory(requireActivity().application, level)
+    }
+
+    private val viewModel: GameViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
+    }
+
+    private val textViewOptions by lazy {
         mutableListOf<TextView>().apply {
             add(binding.tvOption1)
             add(binding.tvOption2)
@@ -30,14 +39,9 @@ class GameFragment : Fragment() {
             add(binding.tvOption6)
         }
     }
-    private val viewModel: GameViewModel by lazy {
-        ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
-        )[GameViewModel::class.java]
-    }
+
     private var _binding: FragmentGameBinding? = null
-    private lateinit var level: Level
+
     private val binding: FragmentGameBinding
         get() = _binding ?: throw RuntimeException("FragmentGameBinding ==  null")
 
@@ -55,14 +59,11 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         observeViewModel()
         setClickListenerToOptions()
-        viewModel.startGame(level)
     }
 
     private fun setClickListenerToOptions() {
-
         for (options in textViewOptions) {
             options.setOnClickListener {
                 viewModel.choseAnswer(options.text.toString().toInt())
@@ -70,14 +71,13 @@ class GameFragment : Fragment() {
         }
     }
 
-
     private fun observeViewModel() {
 
         viewModel.question.observe(viewLifecycleOwner) {
             binding.tvSum.text = it.sum.toString()
             binding.tvLeftNumber.text = it.visibleNumber.toString()
 
-            for(i in 0 until it.options.size) {
+            for (i in 0 until it.options.size) {
                 textViewOptions[i].text = it.options[i].toString()
             }
         }
@@ -112,17 +112,14 @@ class GameFragment : Fragment() {
         }
     }
 
-    private fun getColorByState(state: Boolean) : Int {
-
-        val colorResId = if(state) {
+    private fun getColorByState(state: Boolean): Int {
+        val colorResId = if (state) {
             android.R.color.holo_green_dark
         } else {
             android.R.color.holo_red_light
         }
-
         return ContextCompat.getColor(requireContext(), colorResId)
     }
-
 
     private fun launchGameFinishedFragment(gameResult: GameResult) {
         requireActivity().supportFragmentManager.beginTransaction()
@@ -142,12 +139,10 @@ class GameFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
         _binding = null
     }
 
     companion object {
-
         const val NAME = "GameFragment"
         const val KEY_LEVEL = "KEY_LEVEL"
         fun newInstance(level: Level): GameFragment {
