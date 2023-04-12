@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 
 class GameFinishedFragment : Fragment() {
@@ -28,68 +27,15 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
-        setupClickListeners()
-    }
-
-    private fun initViews() {
 
         binding.gameResult = args.gameResult
-        with(binding) {
-//            tvRequiredAnswers.text = String.format(
-//                getString(
-//                    (R.string.required_answers),
-//                    gameResult.countOfQuestions.toString()
-//
-//                )
-//            )
-
-//            tvScoresAnswers.text = String.format(
-//                getString(
-//                    (R.string.scores_answers),
-//                    args.gameResult.countOfRightAnswers.toString()
-//                )
-//            )
-//
-//            emojiResult.setImageResource(getImageResId())
-
-//            tvScoresPercentage.text = String.format(
-//                getString(
-//                    (R.string.scores_percentage),
-//                    getPercentageOfRightAnswer().toString()
-//                )
-//            )
-//
-//            tvRequiredPercentage.text = String.format(
-//                getString(
-//                    (R.string.required_percentage),
-//                    args.gameResult.gameSettings.minPercentOfRightAnswers.toString()
-//                )
-//            )
-        }
+        setupClickListeners()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
-
-
-//    private fun getPercentageOfRightAnswer() = with(args.gameResult) {
-//        if (countOfQuestions == 0) {
-//            0
-//        } else {
-//            ((countOfRightAnswers.toDouble() *  100)  / countOfQuestions).toInt()
-//        }
-//    }
-
-//    private fun getImageResId(): Int {
-//        return if (!args.gameResult.winner) {
-//            R.drawable.smile_bad
-//        } else {
-//            R.drawable.smile_good
-//        }
-//    }
 
     private fun setupClickListeners() {
 
