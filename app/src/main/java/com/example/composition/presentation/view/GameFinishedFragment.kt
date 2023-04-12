@@ -1,28 +1,21 @@
 package com.example.composition.presentation.view
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
-import com.example.composition.domain.entities.GameResult
 
 class GameFinishedFragment : Fragment() {
 
-    private lateinit var gameResult: GameResult
+    private val args by navArgs<GameFinishedFragmentArgs>()
     private var _binding: FragmentGameFinishedBinding? = null
     private val binding: FragmentGameFinishedBinding
         get() = _binding ?: throw RuntimeException("FragmentGameFinishedBinding ==  null")
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArgs()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,72 +28,76 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
+        setupClickListeners()
+    }
 
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                retryGame()
-            }
-        }
-
-        requireActivity()
-            .onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, callback)
+    private fun initViews() {
 
         with(binding) {
-            tvRequiredAnswers.text = gameResult.countOfQuestions.toString()
-            tvScoresAnswers.text = gameResult.countOfRightAnswers.toString()
-            if (!gameResult.winner) {
-                emojiResult.setImageResource(R.drawable.smile_bad)
-            }
+            tvRequiredAnswers.text = String.format(
+                getString(
+                    (R.string.required_answers),
+                    args.gameResult.countOfQuestions.toString()
 
-            tvScoresPercentage.text = count().toString()
+                )
+            )
 
-            tvRequiredPercentage.text = gameResult.gameSettings.minPercentOfRightAnswers.toString()
+            tvScoresAnswers.text = String.format(
+                getString(
+                    (R.string.scores_answers),
+                    args.gameResult.countOfRightAnswers.toString()
+                )
+            )
 
-            buttonRetry.setOnClickListener {
-                retryGame()
-            }
+            emojiResult.setImageResource(getImageResId())
+
+            tvScoresPercentage.text = String.format(
+                getString(
+                    (R.string.scores_percentage),
+                    getPercentageOfRightAnswer().toString()
+                )
+            )
+
+            tvRequiredPercentage.text = String.format(
+                getString(
+                    (R.string.required_percentage),
+                    args.gameResult.gameSettings.minPercentOfRightAnswers.toString()
+                )
+            )
         }
     }
 
-    private fun count() : Double {
-        val countOfQuestions = gameResult.countOfQuestions.toString().toInt().toDouble()
-        val countOfRightAnswers = gameResult.countOfRightAnswers.toString().toDouble()
-        if(countOfRightAnswers == 0.0) {
-            return 0.0
-        }
-        return  (countOfQuestions/countOfRightAnswers) * 100
-    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 
+
+    private fun getPercentageOfRightAnswer() = with(args.gameResult) {
+        if (countOfQuestions == 0) {
+            0
+        } else {
+            ((countOfRightAnswers.toDouble() *  100)  / countOfQuestions).toInt()
+        }
+    }
+
+    private fun getImageResId(): Int {
+        return if (!args.gameResult.winner) {
+            R.drawable.smile_bad
+        } else {
+            R.drawable.smile_good
+        }
+    }
+
+    private fun setupClickListeners() {
+
+        binding.buttonRetry.setOnClickListener {
+            retryGame()
+        }
+    }
+
     private fun retryGame() {
-        requireActivity().supportFragmentManager.popBackStack(
-            GameFragment.NAME,
-            FragmentManager.POP_BACK_STACK_INCLUSIVE
-        )
-
-    }
-
-    private fun parseArgs() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireArguments().getParcelable(GAME_RESULT, GameResult::class.java)?.let {
-                gameResult = it
-            }
-        }
-    }
-
-    companion object {
-        const val GAME_RESULT = "GAME_RESULT"
-        fun newInstance(gameResult: GameResult): GameFinishedFragment {
-
-            return GameFinishedFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(GAME_RESULT, gameResult)
-                }
-            }
-        }
+        findNavController().popBackStack()
     }
 }
