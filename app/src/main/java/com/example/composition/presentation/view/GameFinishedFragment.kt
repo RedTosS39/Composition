@@ -34,37 +34,38 @@ class GameFinishedFragment : Fragment() {
 
     private fun initViews() {
 
+        binding.gameResult = args.gameResult
         with(binding) {
-            tvRequiredAnswers.text = String.format(
-                getString(
-                    (R.string.required_answers),
-                    args.gameResult.countOfQuestions.toString()
+//            tvRequiredAnswers.text = String.format(
+//                getString(
+//                    (R.string.required_answers),
+//                    gameResult.countOfQuestions.toString()
+//
+//                )
+//            )
 
-                )
-            )
+//            tvScoresAnswers.text = String.format(
+//                getString(
+//                    (R.string.scores_answers),
+//                    args.gameResult.countOfRightAnswers.toString()
+//                )
+//            )
+//
+//            emojiResult.setImageResource(getImageResId())
 
-            tvScoresAnswers.text = String.format(
-                getString(
-                    (R.string.scores_answers),
-                    args.gameResult.countOfRightAnswers.toString()
-                )
-            )
-
-            emojiResult.setImageResource(getImageResId())
-
-            tvScoresPercentage.text = String.format(
-                getString(
-                    (R.string.scores_percentage),
-                    getPercentageOfRightAnswer().toString()
-                )
-            )
-
-            tvRequiredPercentage.text = String.format(
-                getString(
-                    (R.string.required_percentage),
-                    args.gameResult.gameSettings.minPercentOfRightAnswers.toString()
-                )
-            )
+//            tvScoresPercentage.text = String.format(
+//                getString(
+//                    (R.string.scores_percentage),
+//                    getPercentageOfRightAnswer().toString()
+//                )
+//            )
+//
+//            tvRequiredPercentage.text = String.format(
+//                getString(
+//                    (R.string.required_percentage),
+//                    args.gameResult.gameSettings.minPercentOfRightAnswers.toString()
+//                )
+//            )
         }
     }
 
@@ -74,21 +75,21 @@ class GameFinishedFragment : Fragment() {
     }
 
 
-    private fun getPercentageOfRightAnswer() = with(args.gameResult) {
-        if (countOfQuestions == 0) {
-            0
-        } else {
-            ((countOfRightAnswers.toDouble() *  100)  / countOfQuestions).toInt()
-        }
-    }
+//    private fun getPercentageOfRightAnswer() = with(args.gameResult) {
+//        if (countOfQuestions == 0) {
+//            0
+//        } else {
+//            ((countOfRightAnswers.toDouble() *  100)  / countOfQuestions).toInt()
+//        }
+//    }
 
-    private fun getImageResId(): Int {
-        return if (!args.gameResult.winner) {
-            R.drawable.smile_bad
-        } else {
-            R.drawable.smile_good
-        }
-    }
+//    private fun getImageResId(): Int {
+//        return if (!args.gameResult.winner) {
+//            R.drawable.smile_bad
+//        } else {
+//            R.drawable.smile_good
+//        }
+//    }
 
     private fun setupClickListeners() {
 
