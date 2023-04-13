@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.composition.presentation.viewmodel.GameViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -10,15 +18,17 @@
 
         <TextView
             android:id="@+id/tv_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
             android:layout_marginTop="48dp"
-            android:text="@string/timer"
+            android:background="@color/white"
+            android:text="@{viewModel.formattedTime}"
             android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/timer" />
 
         <TextView
             android:id="@+id/tv_sum"
@@ -26,11 +36,12 @@
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:background="@drawable/circle_background"
-            android:text="99"
+            android:text="@string/string_question_mark"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_timer" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_timer"
+            app:numberAsText="@{viewModel.question.sum}" />
 
         <TextView
             android:id="@+id/tv_left_number"
@@ -39,13 +50,14 @@
             android:layout_height="100dp"
             android:layout_marginStart="16dp"
             android:background="@color/teal_200"
-            android:text="1"
             android:textColor="#546E7A"
             app:layout_constraintBottom_toBottomOf="@+id/tv_right_number"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/tv_right_number"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_right_number" />
+            app:layout_constraintTop_toTopOf="@+id/tv_right_number"
+            app:numberAsText="@{viewModel.question.visibleNumber}"
+            tools:text="8" />
 
         <TextView
             android:id="@+id/tv_right_number"
@@ -68,9 +80,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/progress_answers"
+            app:answerProgress="@{viewModel.progressAnswers}"
             app:layout_constraintBottom_toTopOf="@+id/progress_bar"
-            app:layout_constraintTop_toBottomOf="@+id/tv_left_number" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_left_number"
+            app:setColor="@{viewModel.enoughCount}"
+            tools:text="@string/progress_answers" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -83,7 +97,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_answer_progress" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_answer_progress"
+            app:setProgressBar="@{viewModel.percentageOfRightAnswers}"
+            app:setProgressBarColor="@{viewModel.enoughPercent}"
+            app:setSecondaryProgress="@{viewModel.minPercent}" />
 
         <TextView
             android:id="@+id/tv_option_1"
@@ -91,12 +108,14 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:background="@color/color_answer_1"
-            android:text="1"
+
+            android:text="@{viewModel.question.options.get(0).toString()}"
             android:textColor="#795548"
             app:layout_constraintBottom_toTopOf="@+id/tv_option_4"
             app:layout_constraintEnd_toStartOf="@+id/tv_option_2"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:onOptionCLick="@{(option) -> viewModel.choseAnswer(option)}" />
 
         <TextView
             android:id="@+id/tv_option_2"
@@ -104,12 +123,13 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:background="@color/color_answer_2"
-            android:text="2"
+            android:text="@{viewModel.question.options.get(1).toString()}"
             android:textColor="#5E35B1"
             app:layout_constraintBottom_toTopOf="@+id/tv_option_5"
             app:layout_constraintEnd_toStartOf="@+id/tv_option_3"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_option_1" />
+            app:layout_constraintStart_toEndOf="@+id/tv_option_1"
+            app:onOptionCLick="@{(option) -> viewModel.choseAnswer(option)}" />
 
         <TextView
             android:id="@+id/tv_option_3"
@@ -117,12 +137,13 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:background="@color/color_answer_3"
-            android:text="3"
+            android:text="@{viewModel.question.options.get(2).toString()}"
             android:textColor="#009688"
             app:layout_constraintBottom_toTopOf="@+id/tv_option_6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_option_2" />
+            app:layout_constraintStart_toEndOf="@+id/tv_option_2"
+            app:onOptionCLick="@{(option) -> viewModel.choseAnswer(option)}" />
 
         <TextView
             android:id="@+id/tv_option_4"
@@ -130,11 +151,12 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:background="@color/color_answer_4"
-            android:text="4"
+            android:text="@{viewModel.question.options.get(3).toString()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_option_5"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:onOptionCLick="@{(option) -> viewModel.choseAnswer(option)}" />
 
         <TextView
             android:id="@+id/tv_option_5"
@@ -142,11 +164,12 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:background="@color/color_answer_5"
-            android:text="5"
+            android:text="@{viewModel.question.options.get(4).toString()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_option_6"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_option_4" />
+            app:layout_constraintStart_toEndOf="@+id/tv_option_4"
+            app:onOptionCLick="@{(option) -> viewModel.choseAnswer(option)}" />
 
         <TextView
             android:id="@+id/tv_option_6"
@@ -154,12 +177,13 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:background="@color/color_answer_6"
-            android:text="6"
+            android:text="@{viewModel.question.options.get(5).toString()}"
             android:textColor="#26C6DA"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_option_5" />
+            app:layout_constraintStart_toEndOf="@+id/tv_option_5"
+            app:onOptionCLick="@{(option) -> viewModel.choseAnswer(option)}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
